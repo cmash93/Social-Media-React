@@ -2,17 +2,17 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 
-import AuthRoutes from './routes/AuthRoutes';
-import ChatRoutes from './routes/ChatRoutes';
-import MessageRoutes from './routes/MessageRoutes';
-import PostRoutes from './routes/PostRoutes';
-import UploadRoutes from './routes/UploadRoutes';
-import UserRoutes from './routes/UserRoutes';
+import AuthRoutes from './routes/AuthRoutes.js';
+import ChatRoutes from './routes/ChatRoutes.js';
+import MessageRoutes from './routes/MessageRoutes.js';
+import PostRoutes from './routes/PostRoutes.js';
+import UploadRoutes from './routes/UploadRoutes.js';
+import UserRoutes from './routes/UserRoutes.js';
 
-const CONNECTION = process.env.MONGODB_CONNECTION;
-const PORT = process.env.PORT;
+import db from './config/connection.js';
+
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(bodyParser.json({ limit: '30mb', extended: true }));
@@ -27,10 +27,11 @@ app.use('/images', express.static('images'));
 
 dotenv.config();
 
-mongoose
-.connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => app.listen(PORT, () => console.log(`Listening at port ${PORT}`)))
-.catch((error) => console.log(`${error} did not connect`));
+db.once('open', () => {
+    app.listen(PORT, () => {
+        console.log(`Server running on port :${PORT}!`);
+    })
+});
 
 app.use('/auth', AuthRoutes);
 app.use('/chat', ChatRoutes);

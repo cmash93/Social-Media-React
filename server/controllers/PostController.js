@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import Post from '../models/Post';
-import User from '../models/User';
+import Post from '../models/Post.js';
+import User from '../models/User.js';
 
 // Creating Post
 export const createPost = async (req, res) => {
